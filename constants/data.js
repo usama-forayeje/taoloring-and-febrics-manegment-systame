@@ -1,0 +1,121 @@
+import { PERMISSIONS } from "../lib/roles"
+
+export const navItems = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: "dashboard",
+    isActive: false,
+    items: [],
+    permissions: [PERMISSIONS.VIEW_DASHBOARD],
+  },
+  {
+    title: "Orders",
+    url: "/dashboard/orders",
+    icon: "orders",
+    isActive: false,
+    permissions: [PERMISSIONS.VIEW_ORDERS],
+    items: [
+      {
+        title: "All Orders",
+        url: "/dashboard/orders",
+        permissions: [PERMISSIONS.VIEW_ORDERS],
+      },
+      {
+        title: "Pending Orders",
+        url: "/dashboard/orders/pending",
+        permissions: [PERMISSIONS.VIEW_ORDERS],
+      },
+      {
+        title: "Completed Orders",
+        url: "/dashboard/orders/completed",
+        permissions: [PERMISSIONS.VIEW_ORDERS],
+      },
+      {
+        title: "Create Order",
+        url: "/dashboard/orders/create",
+        permissions: [PERMISSIONS.CREATE_ORDERS],
+      },
+    ],
+  },
+  {
+    title: "Customers",
+    url: "/dashboard/customers",
+    icon: "users",
+    isActive: false,
+    items: [],
+    permissions: [PERMISSIONS.VIEW_CUSTOMERS],
+  },
+  {
+    title: "Inventory",
+    url: "/dashboard/inventory",
+    icon: "inventory",
+    isActive: false,
+    permissions: [PERMISSIONS.VIEW_INVENTORY],
+    items: [
+      {
+        title: "Fabrics",
+        url: "/dashboard/inventory/fabrics",
+        permissions: [PERMISSIONS.VIEW_INVENTORY],
+      },
+      {
+        title: "Accessories",
+        url: "/dashboard/inventory/accessories",
+        permissions: [PERMISSIONS.VIEW_INVENTORY],
+      },
+      {
+        title: "Tools",
+        url: "/dashboard/inventory/tools",
+        permissions: [PERMISSIONS.VIEW_INVENTORY],
+      },
+      {
+        title: "Manage Inventory",
+        url: "/dashboard/inventory/manage",
+        permissions: [PERMISSIONS.MANAGE_INVENTORY],
+      },
+    ],
+  },
+  {
+    title: "Measurements",
+    url: "/dashboard/measurements",
+    icon: "ruler",
+    isActive: false,
+    items: [],
+    permissions: [PERMISSIONS.VIEW_ORDERS],
+  },
+  {
+    title: "Users",
+    url: "/dashboard/users",
+    icon: "users",
+    isActive: false,
+    items: [],
+    permissions: [PERMISSIONS.VIEW_USERS],
+  },
+  {
+    title: "Reports",
+    url: "/dashboard/reports",
+    icon: "analytics",
+    isActive: false,
+    items: [
+      {
+        title: "Sales Reports",
+        url: "/dashboard/reports/sales",
+        permissions: [PERMISSIONS.VIEW_REPORTS],
+      },
+      {
+        title: "Financial Reports",
+        url: "/dashboard/reports/financial",
+        permissions: [PERMISSIONS.VIEW_FINANCIAL_REPORTS],
+      },
+    ],
+    permissions: [PERMISSIONS.VIEW_REPORTS],
+  },
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: "settings",
+    isActive: false,
+    items: [],
+    permissions: [PERMISSIONS.VIEW_SETTINGS],
+  },
+]
