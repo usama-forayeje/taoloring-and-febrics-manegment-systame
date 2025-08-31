@@ -1,7 +1,6 @@
 "use client"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { databaseService } from "@/lib/database"
 import { toast } from "sonner"
 
 // Users hooks

@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
-import { authService } from '@/lib/services/auth-service';
 import { hasPermission, hasAnyPermission, ROLES, PERMISSIONS } from '@/lib/roles';
 import { toast } from 'sonner';
+import authService from '@/lib/services/auth-service';
 
 const useAuthStore = create(
   devtools(

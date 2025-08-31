@@ -45,6 +45,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useMemo } from "react"
 import { OrgSwitcher } from "@/components/ui/org-switcher"
 import { useAuthStore } from "@/store/auth-store"
+import { useAuth } from "@/providers/auth-provider"
 
 
 const icons = {
@@ -77,56 +78,68 @@ export default function AppSidebar() {
   const { isOpen } = useMediaQuery()
   const router = useRouter()
 
-  const user = useAuthStore((state) => state.user)
-  const signOut = useAuthStore((state) => state.signOut)
-  const isLoading = useAuthStore((state) => state.isLoading)
-  const initialize = useAuthStore((state) => state.initialize)
+  // Use Auth Context instead of store
+  const {
+    userProfile,
+    loading,
+    isAuthenticated,
+    logout,
+    user,
+    hasRole,
+    hasAnyRole
+  } = useAuth()
 
-  useEffect(() => {
-    initialize()
-  }, [initialize])
+
+
 
   const handleSwitchTenant = (tenantId) => {
     console.log("Switching to tenant:", tenantId)
   }
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/sign-in')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
   const activeTenant = tenants[0]
 
+  // Filter navigation items based on user role
   const filteredNavItems = useMemo(() => {
-    if (!user) return []
+    if (!userProfile) return []
 
-    const userRole = user.role || user.prefs?.role
+    const userRole = userProfile.role
 
     return navItems.filter((item) => {
-      // Check if user has permission for main item
-      // if (item.permissions && !hasAnyPermission(userRole, item.permissions)) {
-      //   return false
-      // }
+      // Role-based filtering logic
+      if (item.roles && !item.roles.includes(userRole)) {
+        return false
+      }
 
       // Filter sub-items based on permissions
-      // if (item.items && item.items.length > 0) {
-      //   item.filteredItems = item.items.filter((subItem) => {
-      //     if (subItem.permissions && !hasAnyPermission(userRole, subItem.permissions)) {
-      //       return false
-      //     }
-      //     return true
-      //   })
+      if (item.items && item.items.length > 0) {
+        item.filteredItems = item.items.filter((subItem) => {
+          if (subItem.roles && !subItem.roles.includes(userRole)) {
+            return false
+          }
+          return true
+        })
 
-      //   // If no sub-items are accessible, hide the main item
-      //   if (item.filteredItems.length === 0 && item.items.length > 0) {
-      //     return false
-      //   }
-      // }
+        // If no sub-items are accessible, hide the main item
+        if (item.filteredItems.length === 0 && item.items.length > 0) {
+          return false
+        }
+      }
 
       return true
     })
-  }, [user])
+  }, [userProfile])
 
-  useEffect(() => {
-    // Side effects based on sidebar state changes
-  }, [isOpen])
 
-  if (isLoading) {
+  if (loading || !isAuthenticated) {
     return (
       <Sidebar collapsible="icon">
         <SidebarContent className="flex items-center justify-center">
@@ -253,7 +266,7 @@ export default function AppSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
+                <DropdownMenuItem onClick={handleLogout}>
                   <IconLogout className="mr-2 h-4 w-4" />
                   Sign out
                 </DropdownMenuItem>

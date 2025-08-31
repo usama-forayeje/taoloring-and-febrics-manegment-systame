@@ -27,7 +27,7 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { useShops, useCreateShop } from "@/hooks/use-database"
 import { useShopStore } from "@/hooks/use-shop-store"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth } from "@/providers/auth-provider"
 
 export function ShopSwitcher() {
   const [open, setOpen] = useState(false)

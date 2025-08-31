@@ -11,10 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/hooks/use-auth"
 import { useNotifications } from "@/hooks/use-database"
 import { Menu, Search, Bell, User, LogOut, Settings } from "lucide-react"
 import { motion } from "framer-motion"
+import { useAuth } from "@/providers/auth-provider"
 
 export function Header({ onMenuClick }) {
   const { user, logout } = useAuth()

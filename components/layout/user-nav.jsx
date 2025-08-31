@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,17 +10,35 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { UserAvatarProfile } from '@/components/ui/user-avatar-profile';
-import { useAuthStore } from '@/store/auth-store';
+import { useAuth } from '@/providers/auth-provider';
 import { Bell, CreditCard, LogOut, UserCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 export function UserNav() {
-  const user = useAuthStore((state) => state.user);
-  const signOut = useAuthStore((state) => state.signOut);
+  const {
+    userProfile,
+    loading,
+    isAuthenticated,
+    logout,
+    user,
+  } = useAuth()
+
+
+   const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/sign-in')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
 
   if (!user) {
     return null;
   }
+
   const router = useRouter();
+
   if (user) {
     return (
       <DropdownMenu>
@@ -54,7 +72,7 @@ export function UserNav() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={signOut}>
+          <DropdownMenuItem onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

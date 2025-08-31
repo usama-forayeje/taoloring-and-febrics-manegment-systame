@@ -1,0 +1,57 @@
+import { NextResponse } from 'next/server';
+
+export async function middleware(request) {
+  const { pathname } = request.nextUrl;
+  
+  // Check for Appwrite session cookies
+  const hasSession = request.cookies.has('a_session_console') ||
+    request.cookies.has('a_session_console_legacy') ||
+    request.cookies.has('a_session');
+
+  console.log('Middleware - Pathname:', pathname, 'Has Session:', hasSession);
+
+  // Logic 1: Allow OAuth callback routes
+  if (pathname.startsWith('/callback') || pathname === '/callback') {
+    return NextResponse.next();
+  }
+
+  // Logic 2: Allow public routes
+  const publicRoutes = [
+    '/sign-in',
+    '/sign-up',
+    '/forgot-password',
+    '/reset-password',
+    '/verify',
+    '/error',
+    '/'
+  ];
+
+  // Allow access to public routes regardless of auth status
+  if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Logic 3: Redirect logged-in users from auth pages
+  const authPages = ['/sign-in', '/sign-up'];
+  if (authPages.includes(pathname) && hasSession) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // Logic 4: Protect dashboard and admin routes
+  const protectedRoutes = ['/dashboard', '/admin'];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  if (isProtectedRoute && !hasSession) {
+    const signInUrl = new URL('/sign-in', request.url);
+    signInUrl.searchParams.set('from', pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.gif$|.*\\.svg$).*)',
+  ]
+};

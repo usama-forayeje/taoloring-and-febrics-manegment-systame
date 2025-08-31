@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ShopSwitcher } from "./shop-switcher"
-import { useAuth } from "@/hooks/use-auth"
 import { motion } from "framer-motion"
 import {
     LayoutDashboard,
@@ -25,6 +24,7 @@ import {
     Clock,
     User,
 } from "lucide-react"
+import { useAuth } from "@/providers/auth-provider"
 
 export function Sidebar({ isOpen, onClose }) {
     const { user } = useAuth()
