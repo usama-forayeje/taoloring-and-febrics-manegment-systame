@@ -1,3 +1,4 @@
+
 import { Work_Sans, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -5,6 +6,7 @@ import { QueryProvider } from "@/components/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import AuthProvider from "@/providers/auth-provider";
 import { TenantProvider } from "@/providers/tenantContext";
+import { Suspense } from "react";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -31,6 +33,7 @@ export default function RootLayout({ children }) {
       <body
         className={`font-sans ${workSans.variable} ${openSans.variable} antialiased`}
       >
+         <Suspense fallback={<div>Loading...</div>}>
         <AuthProvider>
           <ThemeProvider
             attribute="class"
@@ -46,6 +49,7 @@ export default function RootLayout({ children }) {
               </TenantProvider>
           </ThemeProvider>
         </AuthProvider>
+        </Suspense>
       </body>
     </html>
   );
