@@ -1,850 +1,670 @@
-"use client"
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
+"use client";
+
+import { motion } from "framer-motion";
 import {
-  Crown,
-  Sparkles,
-  Eye,
-  Star,
-  Phone,
-  Mail,
-  MapPin,
-  Instagram,
-  Facebook,
-  ArrowRight,
-  Check,
-  Shield,
-  Zap,
-  Award,
-  Scissors,
-  Menu,
-  X,
-  Heart,
-  Users,
-  Clock,
-  Palette,
-  Gift,
-  Sun,
-  Moon,
-  ChevronDown,
-  Store,
-  MessageCircle,
-} from "lucide-react"
-import Link from "next/link"
+    Clock,
+    MapPin,
+    Phone,
+    Star,
+    Scissors,
+    Sparkles,
+    Users,
+    Award,
+    Heart,
+    ChevronRight,
+    Instagram,
+    Facebook,
+    Mail,
+    Sun,
+    Moon
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/providers/auth-provider";
 
-export default function LadiesTailoringLanding() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [theme, setTheme] = useState('light')
-  const [user, setUser] = useState(null) // Simulating auth state
-  const [activeSection, setActiveSection] = useState('home')
-  const [isScrolled, setIsScrolled] = useState(false)
+const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+};
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+const staggerContainer = {
+    animate: {
+        transition: {
+            staggerChildren: 0.1
+        }
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+};
 
-  // Simulate theme toggle
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
-    document.documentElement.classList.toggle('dark', newTheme === 'dark')
-  }
+const scaleIn = {
+    initial: { opacity: 0, scale: 0.8 },
+    animate: { opacity: 1, scale: 1 },
+    transition: { duration: 0.5 }
+};
 
-  const logout = () => {
-    setUser(null)
-  }
+export default function LandingPage() {
+    const { theme, setTheme } = useTheme();
+    const { userProfile, user, logout, isLoading } = useAuth();
 
-  // Services data
-  const services = [
-    {
-      title: "تفصيل البُرقع",
-      titleEn: "Burqa Tailoring",
-      description: "نقدم خدمات تفصيل البُرقع العُماني التقليدي بتصاميم عصرية ومبتكرة، مع الحفاظ على الأصالة. نستخدم أجود أنواع الأقمشة والخيوط.",
-      features: ["تصميم حسب الطلب", "خامات فاخرة", "تطريز يدوي"],
-      icon: Shield,
-    },
-    {
-      title: "تطريز يدوي",
-      titleEn: "Hand Embroidery",
-      description: "فريقنا المتخصص في التطريز اليدوي يحول كل قطعة إلى عمل فني فريد. نستخدم خيوطاً ذهبية وفضية وأحجار كريمة لتزيين تصاميمك.",
-      features: ["تطريز ذهبي وفضي", "تصميمات شخصية", "جودة عالية"],
-      icon: Zap,
-    },
-    {
-      title: "تصميم الأورنا",
-      titleEn: "Orna Design",
-      description: "نقدم تصاميم حصرية للأورنا (الشال) بألوان وأنماط مختلفة تناسب جميع المناسبات. يمكنك اختيار الأقمشة والألوان التي تفضلينها.",
-      features: ["تصاميم حصرية", "ألوان متناسقة", "أقمشة حريرية"],
-      icon: Heart,
-    },
-    {
-      title: "إعادة تأهيل وتجديد",
-      titleEn: "Restoration & Renovation",
-      description: "نقوم بإعادة تأهيل وتجديد القطع القديمة لتستعيد جمالها وبريقها. نصلح أي أضرار ونضيف لمسات عصرية إذا رغبتِ.",
-      features: ["إصلاح الأضرار", "تجديد التصميم", "تغيير الألوان"],
-      icon: Palette,
-    }
-  ];
+    const branches = [
+        {
+            name: "Main Branch - Muscat",
+            address: "Al Khuwair, Muscat, Oman",
+            phone: "+968 2234 5678",
+            hours: "9:00 AM - 9:00 PM",
+            isMain: true
+        },
+        {
+            name: "Sohar Branch",
+            address: "Sohar Industrial Area, Sohar",
+            phone: "+968 2634 1234",
+            hours: "9:00 AM - 8:00 PM",
+            isMain: false
+        },
+        {
+            name: "Salalah Branch",
+            address: "Al Dahariz, Salalah",
+            phone: "+968 2329 5678",
+            hours: "9:00 AM - 8:00 PM",
+            isMain: false
+        }
+    ];
 
-  const branches = [
-    {
-      id: 1,
-      name: "الفرع الأول - مسقط الرئيسي",
-      nameEn: "Branch 1 - Muscat Main",
-      address: "شارع السلطان قابوس، الخوير، مسقط",
-      addressEn: "Sultan Qaboos Street, Al Khuwair, Muscat",
-      phone: "+968 2244 5566",
-      whatsapp: "+968 9988 7766",
-      hours: "السبت - الخميس: 9:00 ص - 10:00 م",
-      hoursEn: "Sat - Thu: 9:00 AM - 10:00 PM",
-      image: "https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg?auto=compress&cs=tinysrgb&w=400&h=300",
-      speciality: "تصاميم VIP وخدمة شخصية"
-    },
-    {
-      id: 2,
-      name: "الفرع الثاني - صلالة",
-      nameEn: "Branch 2 - Salalah",
-      address: "منطقة الحافة، بجانب مول صلالة",
-      addressEn: "Al Hafah, Next to Salalah Mall",
-      phone: "+968 2377 8899",
-      whatsapp: "+968 9955 4433",
-      hours: "السبت - الخميس: 9:30 ص - 9:30 م",
-      hoursEn: "Sat - Thu: 9:30 AM - 9:30 PM",
-      image: "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=400&h=300",
-      speciality: "تطريز تراثي وتصاميم ظفارية"
-    },
-    {
-      id: 3,
-      name: "الفرع الثالث - نزوى",
-      nameEn: "Branch 3 - Nizwa",
-      address: "سوق نزوى التقليدي، بجانب القلعة",
-      addressEn: "Nizwa Traditional Souq, Near the Fort",
-      phone: "+968 2544 3322",
-      whatsapp: "+968 9922 1199",
-      hours: "السبت - الخميس: 8:00 ص - 8:00 م",
-      hoursEn: "Sat - Thu: 8:00 AM - 8:00 PM",
-      image: "https://images.pexels.com/photos/1884582/pexels-photo-1884582.jpeg?auto=compress&cs=tinysrgb&w=400&h=300",
-      speciality: "تراث الداخلية وتصاميم كلاسيكية"
-    },
-    {
-      id: 4,
-      name: "الفرع الرابع - صور",
-      nameEn: "Branch 4 - Sur",
-      address: "الكورنيش، مقابل فندق صور بلازا",
-      addressEn: "Corniche, Opposite Sur Plaza Hotel",
-      phone: "+968 2566 7788",
-      whatsapp: "+968 9977 5544",
-      hours: "السبت - الخميس: 9:00 ص - 9:00 م",
-      hoursEn: "Sat - Thu: 9:00 AM - 9:00 PM",
-      image: "https://images.pexels.com/photos/1884583/pexels-photo-1884583.jpeg?auto=compress&cs=tinysrgb&w=400&h=300",
-      speciality: "تصاميم بحرية وألوان عصرية"
-    }
-  ]
+    const services = [
+        {
+            title: "Custom Tailoring",
+            description: "Bespoke ladies clothing tailored to perfection",
+            icon: Scissors,
+            color: "from-pink-500 to-rose-500"
+        },
+        {
+            title: "Premium Ornas",
+            description: "Beautiful collection of traditional and modern ornas",
+            icon: Sparkles,
+            color: "from-purple-500 to-indigo-500"
+        },
+        {
+            title: "Alterations",
+            description: "Expert alterations and fitting services",
+            icon: Award,
+            color: "from-blue-500 to-cyan-500"
+        },
+        {
+            title: "Bridal Wear",
+            description: "Exquisite bridal and special occasion dresses",
+            icon: Heart,
+            color: "from-emerald-500 to-teal-500"
+        }
+    ];
 
-  const collections = [
-    {
-      name: "مجموعة الأناقة الملكية",
-      nameEn: "Royal Elegance Collection",
-      image: "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 250 ر.ع",
-      priceEn: "From 250 OMR",
-      description: "تصاميم مستوحاة من القصور الملكية بتطريز ذهبي فاخر",
-      items: 25
-    },
-    {
-      name: "مجموعة المناسبات الخاصة",
-      nameEn: "Special Occasions Collection",
-      image: "https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 180 ر.ع",
-      priceEn: "From 180 OMR",
-      description: "تصاميم رسمية للمناسبات والحفلات الراقية",
-      items: 35
-    },
-    {
-      name: "مجموعة العروس الماسية",
-      nameEn: "Diamond Bridal Collection",
-      image: "https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 500 ر.ع",
-      priceEn: "From 500 OMR",
-      description: "تصاميم حصرية للعرائس بأحجار كريمة ولؤلؤ طبيعي",
-      items: 15
-    },
-    {
-      name: "مجموعة الشباب العصرية",
-      nameEn: "Modern Youth Collection",
-      image: "https://images.pexels.com/photos/1598506/pexels-photo-1598506.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 120 ر.ع",
-      priceEn: "From 120 OMR",
-      description: "تصاميم عصرية للشابات بألوان جريئة وأنماط حديثة",
-      items: 40
-    },
-    {
-      name: "مجموعة التراث العُماني",
-      nameEn: "Omani Heritage Collection",
-      image: "https://images.pexels.com/photos/1884582/pexels-photo-1884582.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 200 ر.ع",
-      priceEn: "From 200 OMR",
-      description: "تصاميم تراثية أصيلة مستوحاة من الفنون العُمانية التقليدية",
-      items: 20
-    },
-    {
-      name: "مجموعة الأورنا الحريرية",
-      nameEn: "Premium Silk Orna Collection",
-      image: "https://images.pexels.com/photos/1884583/pexels-photo-1884583.jpeg?auto=compress&cs=tinysrgb&w=500&h=600",
-      price: "من 80 ر.ع",
-      priceEn: "From 80 OMR",
-      description: "أورنا حريرية فاخرة بألوان متدرجة وتصاميم فنية راقية",
-      items: 60
-    }
-  ]
+    const stats = [
+        { number: "15+", label: "Years Experience", icon: Award },
+        { number: "5000+", label: "Happy Customers", icon: Users },
+        { number: "3", label: "Branches", icon: MapPin },
+        { number: "4.9", label: "Customer Rating", icon: Star }
+    ];
 
-  const testimonials = [
-    {
-      name: "فاطمة بنت سالم المحروقية",
-      location: "مسقط",
-      rating: 5,
-      comment: "محل عبد الرحيم أفضل متجر لتفصيل البُرقع في عُمان. الجودة ممتازة والخدمة راقية جداً. التطريز اليدوي فن حقيقي. أنصح جميع الأخوات بزيارة هذا المحل الرائع.",
-      avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150",
-      order: "بُرقع العرس الذهبي"
-    },
-    {
-      name: "عائشة بنت محمد البلوشية",
-      location: "صلالة",
-      rating: 5,
-      comment: "التطريز اليدوي رائع جداً والتصاميم عصرية وأنيقة. فريق العمل محترف ومتعاون جداً. حصلت على أجمل أورنا في المناسبة. تجربة مميزة بكل المقاييس.",
-      avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150",
-      order: "أورنا حريرية متدرجة"
-    },
-    {
-      name: "مريم بنت علي الزدجالية",
-      location: "نزوى",
-      rating: 5,
-      comment: "خدمة التوصيل سريعة والأسعار معقولة جداً. حصلت على بُرقع العرس من الفرع الثالث وكان فوق التوقعات بمراحل. الخامات فاخرة والتفصيل دقيق. شكراً لكم من القلب.",
-      avatar: "https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?auto=compress&cs=tinysrgb&w=150&h=150",
-      order: "بُرقع التراث العُماني"
-    },
-    {
-      name: "زينب بنت أحمد الهنائية",
-      location: "صور",
-      rating: 5,
-      comment: "الفرع الرابع في صور خدمة ممتازة. طلبت تصميم حسب الطلب وكانت النتيجة أكثر من رائعة. الألوان البحرية جميلة جداً والتطريز فني احترافي. أعود دائماً لهذا المحل.",
-      avatar: "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=150&h=150",
-      order: "تصميم بحري خاص"
-    }
-  ]
+    const toggleTheme = (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        const endRadius = Math.hypot(
+            Math.max(x, innerWidth - x),
+            Math.max(y, innerHeight - y)
+        );
 
-  const galleryImages = [
-    {
-      src: "https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "بُرقع مطرز بالذهب",
-      category: "تطريز فاخر"
-    },
-    {
-      src: "https://images.pexels.com/photos/1598505/pexels-photo-1598505.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "أورنا حريرية زرقاء",
-      category: "حرير طبيعي"
-    },
-    {
-      src: "https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "تصميم العروس الملكي",
-      category: "مجموعة العرائس"
-    },
-    {
-      src: "https://images.pexels.com/photos/1598506/pexels-photo-1598506.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "بُرقع شبابي عصري",
-      category: "تصاميم حديثة"
-    },
-    {
-      src: "https://images.pexels.com/photos/1884582/pexels-photo-1884582.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "تراث عُماني أصيل",
-      category: "التراث العُماني"
-    },
-    {
-      src: "https://images.pexels.com/photos/1884583/pexels-photo-1884583.jpeg?auto=compress&cs=tinysrgb&w=400&h=500",
-      title: "أورنا ملونة راقية",
-      category: "ألوان متدرجة"
-    }
-  ]
+        const isDark = theme === "dark";
 
-  return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'dark bg-gray-900' : 'bg-white'}`}>
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg'
-          : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md'
-          } border-b border-gray-200 dark:border-gray-700`}
-      >
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-3"
-            >
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Crown className="h-7 w-7 text-white" />
-              </div>
-              <div className="text-right">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  محل عبد الرحيم
-                </h1>
-                <p className="text-xs text-gray-600 dark:text-gray-400">Mohol Abdur Rahim</p>
-              </div>
-            </motion.div>
+        if (document.startViewTransition) {
+            const transition = document.startViewTransition(() => {
+                setTheme(isDark ? "light" : "dark");
+            });
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#home" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">الرئيسية</a>
-              <a href="#services" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">خدماتنا</a>
-              <a href="#collections" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">المجموعات</a>
-              <a href="#gallery" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">المعرض</a>
-              <a href="#branches" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">فروعنا</a>
-              <a href="#contact" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors font-medium">اتصل بنا</a>
-            </div>
+            transition.ready.then(() => {
+                const clipPath = [
+                    `circle(0px at ${x}px ${y}px)`,
+                    `circle(${endRadius}px at ${x}px ${y}px)`,
+                ];
+                document.documentElement.animate(
+                    {
+                        clipPath: isDark ? [...clipPath].reverse() : clipPath,
+                    },
+                    {
+                        duration: 400,
+                        easing: "ease-in",
+                        pseudoElement: isDark ? "::view-transition-old(root)" : "::view-transition-new(root)",
+                    }
+                );
+            });
+        } else {
+            setTheme(isDark ? "light" : "dark");
+        }
+    };
 
-            {/* User Profile & Theme Toggle */}
-            <div className="flex items-center space-x-4">
-              {/* Theme Toggle */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                {theme === 'light' ? (
-                  <Moon className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                ) : (
-                  <Sun className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                )}
-              </motion.button>
+    const navAction = userProfile && userProfile.role && userProfile.role !== 'user' ? (
+        <Link href="/dashboard">
+            <Button size="sm" className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+                Dashboard
+                <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+        </Link>
+    ) : userProfile ? (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full w-10 h-10">
+                    <Avatar className="w-8 h-8">
+                        <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
+                        <AvatarFallback>{userProfile.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    ) : (
+        <Link href="/login">
+            <Button size="sm" className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
+                Log In
+                <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+        </Link>
+    );
 
-              {/* User Profile or Login */}
-              {user ? (
+    return (
+        <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
+            {/* Animated Background Elements */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center space-x-2 cursor-pointer group"
-                  onClick={logout}
-                >
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-purple-500 group-hover:border-pink-500 transition-colors"
-                  />
-                  <div className="text-right">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white block">{user.name}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">اضغط للخروج</span>
-                  </div>
-                </motion.div>
-              ) : (
-                <Link href="/sign-in">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-medium shadow-lg"
-                  >
-                    تسجيل الدخول
-                  </motion.button>
-                </Link>
-              )}
-
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+                    className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-pink-400/20 to-purple-400/20 rounded-full blur-3xl"
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 180, 360],
+                    }}
+                    transition={{
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+                <motion.div
+                    className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"
+                    animate={{
+                        scale: [1.2, 1, 1.2],
+                        rotate: [360, 180, 0],
+                    }}
+                    transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+                <motion.div
+                    className="absolute top-1/2 left-1/2 w-60 h-60 bg-gradient-to-br from-emerald-400/10 to-teal-400/10 rounded-full blur-2xl"
+                    animate={{
+                        x: [-100, 100, -100],
+                        y: [-50, 50, -50],
+                    }}
+                    transition={{
+                        duration: 15,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
             </div>
-          </div>
 
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700"
+            {/* Header - Mobile Responsive Changes */}
+            <motion.header
+                className="sticky top-0 z-50 w-full bg-card/80 backdrop-blur-md border-b border-border/80"
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
             >
-              <div className="flex flex-col space-y-4">
-                <a href="#home" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">الرئيسية</a>
-                <a href="#services" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">خدماتنا</a>
-                <a href="#collections" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">المجموعات</a>
-                <a href="#gallery" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">المعرض</a>
-                <a href="#branches" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">فروعنا</a>
-                <a href="#contact" className="text-gray-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-right font-medium">اتصل بنا</a>
-              </div>
-            </motion.div>
-          )}
-        </nav>
-      </motion.header>
-
-      {/* Hero Section */}
-      <section
-        id="home"
-        className="relative pt-20 min-h-screen flex items-center overflow-hidden"
-      >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239C92AC\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'4\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
-        </div>
-
-        {/* Hero Image */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080"
-            alt="A woman wearing a burqa from our premium collection"
-            className="w-full h-full object-cover opacity-10 dark:opacity-5"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
-          <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="mb-8"
-            >
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-800 dark:text-purple-300 px-6 py-3 rounded-full text-sm font-medium mb-8 shadow-lg">
-                <Sparkles className="h-4 w-4" />
-                <span>أفضل متجر للبُرقع والأورنا في عُمان منذ 1995</span>
-                <Sparkles className="h-4 w-4" />
-              </div>
-
-              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 dark:text-white mb-8 leading-tight">
-                <span className="block text-right mb-4">محل</span>
-                <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
-                  عبد الرحيم
-                </span>
-                <span className="block text-3xl md:text-4xl mt-4 text-gray-700 dark:text-gray-300">
-                  للخياطة النسائية الفاخرة
-                </span>
-              </h1>
-
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed text-right mb-4">
-                نحن رواد تفصيل وتصميم البُرقع والأورنا في سلطنة عُمان منذ أكثر
-                من 25 عاماً. نقدم أجود الخامات المستوردة مع أفضل التصاميم
-                العصرية والتراثية بحرفية عُمانية أصيلة.
-              </p>
-
-              <p className="text-lg text-purple-700 dark:text-purple-400 font-semibold">
-                4 فروع | 25000+ عميلة راضية | خدمة 24/7
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
-            >
-              <motion.button
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: '0 20px 40px rgba(147, 51, 234, 0.3)',
-                }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-10 py-5 rounded-xl font-semibold text-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 flex items-center gap-3"
-              >
-                <Crown className="h-6 w-6" />
-                استكشف مجموعاتنا الحصرية
-                <ArrowRight className="h-6 w-6" />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="border-2 border-purple-600 text-purple-600 dark:text-purple-400 px-10 py-5 rounded-xl font-semibold text-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300 flex items-center gap-3 shadow-lg"
-              >
-                <Phone className="h-6 w-6" />
-                احجز موعداً مجانياً
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-green-500 text-white px-10 py-5 rounded-xl font-semibold text-xl shadow-lg hover:bg-green-600 transition-all duration-300 flex items-center gap-3"
-              >
-                <MessageCircle className="h-6 w-6" />
-                واتساب مباشر
-              </motion.button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
-            >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="text-center bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg p-6 rounded-2xl shadow-lg"
-              >
-                <div className="text-4xl font-bold text-purple-600 dark:text-purple-400">
-                  25000+
-                </div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  عميلة راضية
-                </div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="text-center bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg p-6 rounded-2xl shadow-lg"
-              >
-                <div className="text-4xl font-bold text-purple-600 dark:text-purple-400">
-                  4
-                </div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  فروع متخصصة
-                </div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                className="text-center bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg p-6 rounded-2xl shadow-lg"
-              >
-                <div className="text-4xl font-bold text-purple-600 dark:text-purple-400">
-                  24/7
-                </div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  خدمة العملاء
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="services" className="py-24 bg-gray-50 dark:bg-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Award className="h-4 w-4" />
-              <span>خدمات متخصصة ومميزة</span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              خدماتنا الحصرية
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto text-right leading-relaxed">
-              نقدم مجموعة شاملة من الخدمات المتخصصة في تفصيل وتصميم البُرقع
-              والأورنا بأعلى معايير الجودة والحرفية العُمانية الأصيلة
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10, rotateY: 5 }}
-                className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-700 group relative overflow-hidden"
-              >
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div className="relative z-10">
-                  <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-lg">
-                    <service.icon className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-right">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-right leading-relaxed mb-6">
-                    {service.description}
-                  </p>
-
-                  <div className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-end gap-2 text-sm text-gray-500 dark:text-gray-400"
-                      >
-                        <span>{feature}</span>
-                        <Check className="h-4 w-4 text-green-500" />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-6 text-sm text-purple-600 dark:text-purple-400 font-medium text-right">
-                    {service.titleEn}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Collections Section */}
-      <section id="collections" className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Eye className="h-4 w-4" />
-              <span>مجموعات حصرية ومميزة</span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              مجموعاتنا الفاخرة
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto text-right leading-relaxed">
-              اكتشفي أحدث تصاميمنا المستوحاة من التراث العربي الأصيل مع لمسة
-              عصرية راقية تناسب جميع الأذواق والمناسبات
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {collections.map((collection, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative overflow-hidden rounded-3xl shadow-xl">
-                  <img
-                    src={collection.image}
-                    alt={collection.name}
-                    className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-
-                  {/* Collection Badge */}
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-purple-600 px-3 py-1 rounded-full text-sm font-bold">
-                    {collection.items} قطعة
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <h3 className="text-2xl font-bold mb-2 text-right">
-                      {collection.name}
-                    </h3>
-                    <p className="text-purple-200 text-sm mb-3 text-right">
-                      {collection.nameEn}
-                    </p>
-                    <p className="text-white/90 text-sm mb-4 text-right leading-relaxed">
-                      {collection.description}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <motion.button
+                <div className="container mx-auto px-4 py-2 flex items-center justify-between">
+                    <motion.div
+                        className="flex items-center gap-3"
                         whileHover={{ scale: 1.05 }}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-                      >
-                        استكشف المجموعة
-                      </motion.button>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold">
-                          {collection.price}
-                        </div>
-                        <div className="text-sm text-purple-200">
-                          {collection.priceEn}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gallery Section */}
-      <section id="gallery" className="py-24 bg-gray-50 dark:bg-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              معرض أعمالنا
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto text-right">
-              شاهدي نماذج من أعمالنا الفنية والتصاميم الحصرية التي أبدعناها
-              لعميلاتنا الكريمات
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {galleryImages.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative overflow-hidden rounded-2xl shadow-lg">
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute bottom-4 left-4 right-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <h4 className="font-bold text-lg text-right">
-                      {item.title}
-                    </h4>
-                    <p className="text-sm text-purple-200 text-right">
-                      {item.category}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Branches Section */}
-      <section id="branches" className="py-24 bg-white dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-20"
-          >
-            <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Store className="h-4 w-4" />
-              <span>فروع منتشرة في جميع أنحاء السلطنة</span>
-            </div>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              فروعنا الأربعة في عُمان
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto text-right leading-relaxed">
-              نخدمكم في أربعة مواقع استراتيجية عبر السلطنة لنكون قريبين منكم
-              دائماً مع نفس مستوى الجودة والخدمة المميزة
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {branches.map((branch, index) => (
-              <motion.div
-                key={branch.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group border border-gray-100 dark:border-gray-700"
-              >
-                <div className="relative h-64">
-                  <img
-                    src={branch.image}
-                    alt={branch.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-
-                  {/* Branch Number Badge */}
-                  <div className="absolute top-4 left-4 w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                    {branch.id}
-                  </div>
-
-                  {/* Speciality Badge */}
-                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm text-purple-600 px-3 py-1 rounded-full text-sm font-semibold">
-                    {branch.speciality}
-                  </div>
-                </div>
-
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-right">
-                    {branch.name}
-                  </h3>
-                  <p className="text-sm text-purple-600 dark:text-purple-400 mb-6 text-right font-medium">
-                    {branch.nameEn}
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
-                      <MapPin className="h-5 w-5 text-purple-500 mt-1 flex-shrink-0" />
-                      <div className="text-right flex-1">
-                        <div className="font-medium">{branch.address}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {branch.addressEn}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-                      <Phone className="h-5 w-5 text-purple-500" />
-                      <div className="text-right flex-1">
-                        <span className="font-medium">{branch.phone}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-                      <MessageCircle className="h-5 w-5 text-green-500" />
-                      <div className="text-right flex-1">
-                        <span className="font-medium text-green-600">
-                          {branch.whatsapp}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
-                      <Clock className="h-5 w-5 text-purple-500 mt-1" />
-                      <div className="text-right flex-1">
-                        <div className="font-medium">{branch.hours}</div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {branch.hoursEn}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-3 mt-8">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-medium hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg flex items-center justify-center gap-2"
+                        transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <Phone className="h-4 w-4" />
-                      اتصل بالفرع
-                    </motion.button>
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <Scissors className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                        </div>
+                        <div>
+                            {/* Simplified text for smaller screens */}
+                            <h1 className="text-sm md:text-xl font-bold text-gray-800 dark:text-gray-100">
+                                <span className="hidden md:inline">Mohol Abdur Rahim</span>
+                                <span className="md:hidden">Mohol AR</span>
+                            </h1>
+                            <p className="text-xs text-muted-foreground">Premium Ladies Fashion</p>
+                        </div>
+                    </motion.div>
 
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 bg-green-500 text-white py-3 rounded-xl font-medium hover:bg-green-600 transition-all duration-300 shadow-lg flex items-center justify-center gap-2"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      واتساب
-                    </motion.button>
-                  </div>
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={toggleTheme}
+                                aria-label="Toggle theme"
+                            >
+                                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                            </Button>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button variant="outline" size="sm" className="hidden md:inline-flex">
+                                <Phone className="w-4 h-4 mr-2" />
+                                Call Now
+                            </Button>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            {navAction}
+                        </motion.div>
+                    </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </motion.header>
 
-    </div >
-  )
+            {/* Main Content Container */}
+            <main className="pt-16 md:pt-20">
+                {/* Hero Section */}
+                <section className="relative z-10 px-4 py-8 md:py-20">
+                    <div className="container mx-auto text-center">
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            animate="animate"
+                            className="space-y-4 md:space-y-8"
+                        >
+                            <motion.div variants={fadeInUp}>
+                                <Badge className="mb-4 bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900 border-0">
+                                    <Sparkles className="w-3 h-3 mr-1" />
+                                    Premium Ladies Fashion in Oman
+                                </Badge>
+                                <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6">
+                                    <span className="text-gray-800 dark:text-white">
+                                        MOHOL ABDUR RAHIM
+                                    </span>
+                                    <br />
+                                    <span className="text-muted-foreground">
+                                        Tailoring & Ornas
+                                    </span>
+                                </h1>
+                                <p className="text-sm md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                                    Experience the finest in ladies tailoring and premium orna collections across Oman.
+                                    Where tradition meets modern elegance.
+                                </p>
+                            </motion.div>
+
+                            <motion.div
+                                variants={fadeInUp}
+                                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                            >
+                                <Button
+                                    size="lg"
+                                    className="bg-gray-800 text-white hover:bg-gray-900 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 px-8 py-6 text-lg"
+                                >
+                                    <Phone className="w-5 h-5 mr-2" />
+                                    Book Appointment
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="px-8 py-6 text-lg border-2 hover:bg-card hover:border-gray-200 dark:hover:border-gray-800"
+                                >
+                                    View Collection
+                                    <ChevronRight className="w-5 h-5 ml-2" />
+                                </Button>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Stats Section */}
+                <section className="relative z-10 py-8 md:py-16 px-4">
+                    <div className="container mx-auto">
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            whileInView="animate"
+                            viewport={{ once: true }}
+                            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
+                        >
+                            {stats.map((stat) => (
+                                <motion.div key={stat.label} variants={scaleIn}>
+                                    <Card className="text-center p-4 md:p-6 bg-card/60 backdrop-blur-sm border-border hover:shadow-lg transition-all duration-300">
+                                        <CardContent className="p-0">
+                                            <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-800 dark:bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3">
+                                                <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-white dark:text-gray-900" />
+                                            </div>
+                                            <motion.div
+                                                initial={{ scale: 0 }}
+                                                whileInView={{ scale: 1 }}
+                                                transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                                                className="text-xl md:text-2xl font-bold text-foreground"
+                                            >
+                                                {stat.number}
+                                            </motion.div>
+                                            <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Services Section */}
+                <section className="relative z-10 py-12 md:py-20 px-4">
+                    <div className="container mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-8 md:mb-16"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
+                                <span className="text-gray-800 dark:text-white">
+                                    Our Services
+                                </span>
+                            </h2>
+                            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                                From custom tailoring to premium orna collections, we offer comprehensive fashion solutions
+                            </p>
+                        </motion.div>
+
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            whileInView="animate"
+                            viewport={{ once: true }}
+                            className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+                        >
+                            {services.map((service) => (
+                                <motion.div key={service.title} variants={scaleIn}>
+                                    <Card className="group h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+                                        <CardContent className="p-4 md:p-6 text-center">
+                                            <motion.div
+                                                className={`w-14 h-14 md:w-16 md:h-16 bg-gray-800 dark:bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-4 group-hover:scale-110 transition-transform duration-300`}
+                                                whileHover={{ rotate: 360 }}
+                                                transition={{ duration: 0.6 }}
+                                            >
+                                                <service.icon className="w-7 h-7 md:w-8 md:h-8 text-white dark:text-gray-900" />
+                                            </motion.div>
+                                            <h3 className="text-lg md:text-xl font-semibold mb-2 text-foreground">
+                                                {service.title}
+                                            </h3>
+                                            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                                                {service.description}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Branches Section */}
+                <section className="relative z-10 py-12 md:py-20 px-4 bg-secondary">
+                    <div className="container mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-8 md:mb-16"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
+                                <span className="text-gray-800 dark:text-white">
+                                    Our Locations
+                                </span>
+                            </h2>
+                            <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                                Visit us at any of our convenient locations across Oman
+                            </p>
+                        </motion.div>
+
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            whileInView="animate"
+                            viewport={{ once: true }}
+                            className="grid md:grid-cols-3 gap-6 md:gap-8"
+                        >
+                            {branches.map((branch) => (
+                                <motion.div key={branch.name} variants={fadeInUp}>
+                                    <Card className={`group h-full bg-card/80 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 ${
+                                        branch.isMain ? 'ring-2 ring-gray-500/50' : ''
+                                    }`}>
+                                        <CardContent className="p-4 md:p-6">
+                                            {branch.isMain && (
+                                                <Badge className="mb-2 md:mb-4 bg-gray-800 text-white dark:bg-gray-100 dark:text-gray-900 border-0">
+                                                    <Star className="w-3 h-3 mr-1" />
+                                                    Main Branch
+                                                </Badge>
+                                            )}
+
+                                            <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-4 text-foreground group-hover:text-gray-600 transition-colors">
+                                                {branch.name}
+                                            </h3>
+
+                                            <div className="space-y-2">
+                                                <div className="flex items-start gap-2">
+                                                    <MapPin className="w-4 h-4 md:w-5 md:h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+                                                    <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">
+                                                        {branch.address}
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+                                                    <Phone className="w-4 h-4 md:w-5 md:h-5 text-gray-500 flex-shrink-0" />
+                                                    <p className="text-muted-foreground text-xs md:text-sm font-medium">
+                                                        {branch.phone}
+                                                    </p>
+                                                </div>
+
+                                                <div className="flex items-center gap-2">
+                                                    <Clock className="w-4 h-4 md:w-5 md:h-5 text-gray-500 flex-shrink-0" />
+                                                    <p className="text-muted-foreground text-xs md:text-sm">
+                                                        {branch.hours}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <motion.div
+                                                whileHover={{ scale: 1.02 }}
+                                                className="mt-4 md:mt-6"
+                                            >
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full group-hover:bg-accent group-hover:border-gray-200 dark:group-hover:border-gray-800"
+                                                >
+                                                    <MapPin className="w-4 h-4 mr-2" />
+                                                    Get Directions
+                                                </Button>
+                                            </motion.div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Testimonials Section */}
+                <section className="relative z-10 py-12 md:py-20 px-4">
+                    <div className="container mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="text-center mb-8 md:mb-16"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">
+                                <span className="text-gray-800 dark:text-white">
+                                    What Our Customers Say
+                                </span>
+                            </h2>
+                        </motion.div>
+
+                        <motion.div
+                            variants={staggerContainer}
+                            initial="initial"
+                            whileInView="animate"
+                            viewport={{ once: true }}
+                            className="grid md:grid-cols-3 gap-6 md:gap-8"
+                        >
+                            {[
+                                {
+                                    name: "Fatima Al-Zahra",
+                                    text: "Absolutely beautiful work! The attention to detail in my wedding dress was incredible.",
+                                    rating: 5,
+                                    location: "Muscat"
+                                },
+                                {
+                                    name: "Aisha Mohammed",
+                                    text: "Best orna collection in Oman. Quality fabrics and excellent customer service.",
+                                    rating: 5,
+                                    location: "Sohar"
+                                },
+                                {
+                                    name: "Mariam Hassan",
+                                    text: "Professional tailoring with perfect fitting. Highly recommend for special occasions.",
+                                    rating: 5,
+                                    location: "Salalah"
+                                }
+                            ].map((testimonial) => (
+                                <motion.div key={testimonial.name} variants={scaleIn}>
+                                    <Card className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-lg transition-all duration-300">
+                                        <CardContent className="p-4 md:p-6">
+                                            <div className="flex items-center gap-1 mb-2 md:mb-4">
+                                                {[...Array(testimonial.rating)].map((_, i) => (
+                                                    <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-yellow-400 text-yellow-400" />
+                                                ))}
+                                            </div>
+                                            <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-4 italic leading-relaxed">
+                                                "{testimonial.text}"
+                                            </p>
+                                            <div className="flex items-center gap-2 md:gap-3">
+                                                <div className="w-8 h-8 md:w-10 md:h-10 bg-gray-400 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                                                    <span className="text-white font-semibold text-xs md:text-sm">
+                                                        {testimonial.name.split(' ').map(n => n[0]).join('')}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-foreground text-sm md:text-base">
+                                                        {testimonial.name}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {testimonial.location}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* CTA Section */}
+                <section className="relative z-10 py-12 md:py-20 px-4 bg-gray-800 dark:bg-gray-100">
+                    <div className="container mx-auto text-center">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="space-y-4 md:space-y-8"
+                        >
+                            <h2 className="text-2xl md:text-4xl font-bold text-white dark:text-gray-900 mb-2 md:mb-4">
+                                Ready to Experience Premium Fashion?
+                            </h2>
+                            <p className="text-sm md:text-xl text-gray-300 dark:text-gray-600 max-w-2xl mx-auto">
+                                Visit any of our branches or call us to schedule your consultation today
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                                <Button
+                                    size="lg"
+                                    variant="secondary"
+                                    className="bg-white text-gray-800 hover:bg-gray-50 px-8 py-6 text-lg font-semibold"
+                                >
+                                    <Phone className="w-5 h-5 mr-2" />
+                                    +968 2234 5678
+                                </Button>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="border-white dark:text-black hover:bg-white hover:text-gray-800 px-8 py-6 text-lg"
+                                >
+                                    <MapPin className="w-5 h-5 mr-2" />
+                                    Find Us
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+            </main>
+
+            {/* Footer */}
+            <footer className="relative z-10 bg-card text-foreground py-8 md:py-12 px-4">
+                <div className="container mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="grid md:grid-cols-4 gap-6 md:gap-8"
+                    >
+                        <div className="md:col-span-2">
+                            <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-4">
+                                <div className="w-7 h-7 md:w-8 md:h-8 bg-gray-800 dark:bg-gray-100 rounded-full flex items-center justify-center">
+                                    <Scissors className="w-3 h-3 md:w-4 md:h-4 text-white dark:text-gray-900" />
+                                </div>
+                                <h3 className="text-md md:text-xl font-bold">Mohol Abdur Rahim</h3>
+                            </div>
+                            <p className="text-muted-foreground text-xs md:text-sm leading-relaxed mb-4">
+                                Premium ladies tailoring and orna collections serving Oman with excellence for over 15 years.
+                                Where every stitch tells a story of elegance and tradition.
+                            </p>
+                            <div className="flex items-center gap-3 md:gap-4">
+                                <motion.div whileHover={{ scale: 1.1 }}>
+                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-gray-400">
+                                        <Instagram className="w-4 h-4 md:w-5 md:h-5" />
+                                    </Button>
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.1 }}>
+                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-gray-400">
+                                        <Facebook className="w-4 h-4 md:w-5 md:h-5" />
+                                    </Button>
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.1 }}>
+                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-gray-400">
+                                        <Mail className="w-4 h-4 md:w-5 md:h-5" />
+                                    </Button>
+                                </motion.div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-semibold mb-2 md:mb-4 text-gray-400">Quick Links</h4>
+                            <ul className="space-y-1 md:space-y-2 text-muted-foreground text-sm md:text-base">
+                                <li><a href="#" className="hover:text-gray-400 transition-colors">About Us</a></li>
+                                <li><a href="#" className="hover:text-gray-400 transition-colors">Services</a></li>
+                                <li><a href="#" className="hover:text-gray-400 transition-colors">Collection</a></li>
+                            </ul>
+                        </div>
+                    </motion.div>
+                </div>
+            </footer>
+        </div>
+    );
 }
