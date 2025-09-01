@@ -1,38 +1,39 @@
-"use client"
+// src/app/dashboard/page.jsx (বা এর কাছাকাছি)
 
-import { useDashboardStats, useShops } from "@/hooks/use-database"
-import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { ErrorBoundary } from "@/components/ui/error-boundary"
-import { useShopStore } from "@/hooks/use-shop-store"
-import { useAuth } from "@/providers/auth-provider"
+"use client";
+import { useAuth } from "@/providers/auth-provider";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
-  const { user, isLoading: authLoading } = useAuth()
-  const { selectedShopId } = useShopStore()
-  const { data: shops, isLoading: shopsLoading } = useShops()
-  const { data: stats, isLoading: statsLoading } = useDashboardStats(selectedShopId)
+  const { user, userProfile, isLoading } = useAuth();
 
-  if (authLoading || shopsLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
+  useEffect(() => {
+    // Only redirect if a user profile exists and the component is not in a loading state
+    if (userProfile && !isLoading) {
+      if (userProfile.role === "superAdmin" || userProfile.role === "admin") {
+        // Since this page is already /dashboard, no need to redirect again
+        // You can simply show the content here.
+        // For example, you might render the admin dashboard content.
+        // return;
+      } else if (userProfile.role === "user") {
+        redirect("/");
+      }
+    } else if (!userProfile && !isLoading) {
+      redirect("/sign-in");
+    }
+  }, [userProfile, isLoading]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
-  if (!user) {
-    return null
-  }
-
-  const isAdmin = user.role === "superAdmin" || user.role === "admin"
-  const currentShop = shops?.find((shop) => shop.$id === selectedShopId)
-
+  // Your actual dashboard content should go here.
+  // The redirects will handle the access control.
   return (
-    <ErrorBoundary>
-      <DashboardLayout>
-      
-      </DashboardLayout>
-    </ErrorBoundary>
-  )
+    <div>
+      <h1>Welcome to the Dashboard</h1>
+      <p>This page is only for admins and super admins.</p>
+    </div>
+  );
 }

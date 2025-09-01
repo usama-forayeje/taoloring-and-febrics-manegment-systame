@@ -1,3 +1,4 @@
+import { icons } from "lucide-react"
 import { PERMISSIONS } from "../lib/roles"
 
 export const navItems = [
@@ -7,6 +8,7 @@ export const navItems = [
     icon: "dashboard",
     isActive: false,
     items: [],
+    shortcut: ['d', 'd'],
     permissions: [PERMISSIONS.VIEW_DASHBOARD],
   },
   {
@@ -14,26 +16,39 @@ export const navItems = [
     url: "/dashboard/orders",
     icon: "orders",
     isActive: false,
+    shortcut: ['o', 'o'],
     permissions: [PERMISSIONS.VIEW_ORDERS],
     items: [
       {
         title: "All Orders",
         url: "/dashboard/orders",
+        icon: "list",
+        isActive: false,
+        shortcut: ['a', 'o'],
         permissions: [PERMISSIONS.VIEW_ORDERS],
       },
       {
         title: "Pending Orders",
         url: "/dashboard/orders/pending",
+        icon: "clock",
+        isActive: false,
+        shortcut: ['p', 'o'],
         permissions: [PERMISSIONS.VIEW_ORDERS],
       },
       {
         title: "Completed Orders",
         url: "/dashboard/orders/completed",
+        icon: "check-circle",
+        isActive: false,
+        shortcut: ['c', 'o'],
         permissions: [PERMISSIONS.VIEW_ORDERS],
       },
       {
         title: "Create Order",
         url: "/dashboard/orders/create",
+        icon: "plus-circle",
+        isActive: false,
+        shortcut: ['c', 'r', 'o'],
         permissions: [PERMISSIONS.CREATE_ORDERS],
       },
     ],
@@ -43,6 +58,7 @@ export const navItems = [
     url: "/dashboard/customers",
     icon: "users",
     isActive: false,
+    shortcut: ['c', 'u'],
     items: [],
     permissions: [PERMISSIONS.VIEW_CUSTOMERS],
   },
@@ -51,6 +67,7 @@ export const navItems = [
     url: "/dashboard/inventory",
     icon: "inventory",
     isActive: false,
+    shortcut: ['i', 'n'],
     permissions: [PERMISSIONS.VIEW_INVENTORY],
     items: [
       {

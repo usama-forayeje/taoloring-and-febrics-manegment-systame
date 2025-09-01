@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   DropdownMenu,
@@ -7,31 +7,23 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { UserAvatarProfile } from '@/components/ui/user-avatar-profile';
-import { useAuth } from '@/providers/auth-provider';
-import { Bell, CreditCard, LogOut, UserCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { UserAvatarProfile } from "@/components/ui/user-avatar-profile";
+import { useAuth } from "@/providers/auth-provider";
+import { Bell, CreditCard, LogOut, UserCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 export function UserNav() {
-  const {
-    userProfile,
-    loading,
-    isAuthenticated,
-    logout,
-    user,
-  } = useAuth()
+  const { userProfile, logout, user } = useAuth();
 
-
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
-      await logout()
-      router.push('/sign-in')
+      await logout();
+      router.push("/sign-in");
     } catch (error) {
-      console.error('Logout error:', error)
+      console.error("Logout error:", error);
     }
-  }
-
+  };
 
   if (!user) {
     return null;
@@ -44,13 +36,15 @@ export function UserNav() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button>
-            <UserAvatarProfile user={user} />
+            <UserAvatarProfile user={userProfile} />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
+              <p className="text-sm font-medium leading-none">
+                {user.name || "User"}
+              </p>
               <p className="text-xs leading-none text-muted-foreground">
                 {user.email || "Email not available"}
               </p>

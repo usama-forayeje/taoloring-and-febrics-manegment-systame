@@ -27,7 +27,7 @@ import {
 import { useAuth } from "@/providers/auth-provider"
 
 export function Sidebar({ isOpen, onClose }) {
-    const { user } = useAuth()
+    const { user ,userProfile} = useAuth()
     const pathname = usePathname()
     const isAdmin = user?.role === "superAdmin" || user?.role === "admin"
     const isManager = user?.role === "manager"
@@ -185,12 +185,12 @@ export function Sidebar({ isOpen, onClose }) {
                         <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded-full bg-sidebar-primary flex items-center justify-center">
                                 <span className="text-sm font-medium text-sidebar-primary-foreground">
-                                    {user?.name?.charAt(0).toUpperCase()}
+                                    {userProfile?.avatar}
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-sidebar-foreground truncate">{user?.name}</p>
-                                <p className="text-xs text-sidebar-foreground/70 capitalize">{user?.role}</p>
+                                <p className="text-sm font-medium text-sidebar-foreground truncate">{userProfile?.name}</p>
+                                <p className="text-xs text-sidebar-foreground/70 capitalize">{userProfile?.role}</p>
                             </div>
                         </div>
                     </div>
